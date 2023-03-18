@@ -26,5 +26,28 @@ function fetchCountries(name) {
     })
     .then(contries => {
       console.log(contries);
+      elementList(contries);
+      // const array = [];
+      // const elementList = contries.map(function (value) {
+      //   const list = document.createElement('li');
+      //   list.classList.add('item');
+      //   list.textContent = value.name;
+      //   array.push(list);
+      // });
+      // countryList.append(...array);
     });
 }
+const array = [];
+function elementList(countries) {
+  if (countries.length > 0) {
+    countries.map(function (value) {
+      const list = document.createElement('li');
+      list.classList.add('item');
+      list.textContent = value.name;
+      array.push(list);
+    });
+  }
+  countryList.append(...array);
+}
+
+const countryList = document.querySelector('.country-list');
