@@ -21,7 +21,7 @@ let countri = [];
 function fetchCountries(name) {
   console.log(name.target.value);
   countryList.innerHTML = '';
-  count = name.target.value;
+  const count = name.target.value;
   fetch(
     `https://restcountries.com/v2/name/${count}?fields=name,capital,population,flags,languages`
   )
