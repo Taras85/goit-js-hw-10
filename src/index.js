@@ -41,6 +41,7 @@ function fetchCountries(name) {
         console.log(1);
       }
     });
+    //test
 }
 
 function elementList(countries) {
