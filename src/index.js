@@ -30,6 +30,8 @@ function fetchCountries(name) {
     // `https://restcountries.com/v2/name/${count}`
   )
     .then(response => {
+      console.log(response);
+
       return response.json();
     })
     .then(countries => {
@@ -48,7 +50,7 @@ function fetchCountries(name) {
       }
     })
     .catch(error => {
-      console.log(ERROR);
+      console.log('ERROR');
     });
 }
 
