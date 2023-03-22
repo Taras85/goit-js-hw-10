@@ -1,70 +1,48 @@
 import './css/styles.css';
 
 import debounce from 'lodash.debounce';
+import { fetchCountries } from './fetchCountries';
 
-const DEBOUNCE_DELAY = 2300;
+const DEBOUNCE_DELAY = 300;
 
 const searchBox = document.querySelector('#search-box');
 const countryList = document.querySelector('.country-list');
-const countryInfo = document.querySelector('.country-info');
+const countryCard = document.querySelector('.country-info');
 
-searchBox.addEventListener('input', debounce(fetchCountries, DEBOUNCE_DELAY));
-const array = [];
-let countri = [];
+searchBox.addEventListener('input', debounce(countrySearch, DEBOUNCE_DELAY));
+
+let country = [];
 let card = '';
 
-// fetchCountries(name);
-
-// ?fields={field},{field},{field}
-// ?fields=capital,population,flags,languages,coatOfArms.svg
-
-// https://restcountries.com/v2/name/{name}
-
-function fetchCountries(name) {
-  console.log(name.target.value);
-  countryList.innerHTML = '';
-  countryInfo.innerHTML = '';
-  const count = name.target.value;
-  fetch(
-    `https://restcountries.com/v2/name/${count}?fields=name,capital,population,flags,languages`
-    // `https://restcountries.com/v2/name/${count}`
-  )
-    .then(response => {
-      console.log(response);
-
-      return response.json();
-    })
-    .then(countries => {
-      if (!countries) {
-        // console.log(countries.length);
-        // console.log('000');
-        return;
-      } else if (countries.length > 1) {
-        console.log(countries.length);
-        console.log('1++');
-        elementList(countries);
-      } else if (countries.length === 1) {
-        console.log(countries.length);
-        console.log(1);
-        elementCard(countries);
-      }
-    })
-    .catch(error => {
-      console.log('ERROR');
-    });
+function countrySearch() {
+  const country = searchBox.value.trim();
+  if (country.length === 0) {
+    return;
+  }
+  fetchCountries(country).then(countryes => {
+    countryList.innerHTML = '';
+    countryCard.innerHTML = '';
+    if ((countryes.length > 1) & (countryes.length < 10)) {
+      elementList(countryes);
+    } else if (countryes.length === 1) {
+      elementCard(countryes);
+    } else if (countryes.length > 10) {
+      alert('Too many matches found. Please enter a more specific name.');
+    }
+  });
 }
 
-function elementList(countries) {
-  countries.forEach(function (element) {
+function elementList(countryes) {
+  countryes.forEach(function (element) {
     const list = `<li><img class="country-img" src="${element.flags.svg}" alt="flag" width=50px><h2 class="country-text">${element.name}</h2></li>`;
-    countri.push(list);
+    country.push(list);
   });
 
-  countryList.innerHTML = countri;
-  countri = [];
+  countryList.innerHTML = country;
+  country = [];
 }
-function elementCard(countries) {
-  countries.forEach(function (element) {
+function elementCard(countryes) {
+  countryes.forEach(function (element) {
     card = `<p>Official name: ${element.name}</p><p>Capital: ${
       element.capital
     }</p><p class="country-info">Рopulation: ${
@@ -76,7 +54,7 @@ function elementCard(countries) {
     )}, ${element.languages.map(el => el.nativeName)}</p>`;
   });
 
-  countryInfo.innerHTML = card;
+  countryCard.innerHTML = card;
   card = '';
 }
 
