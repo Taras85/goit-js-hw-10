@@ -25,6 +25,8 @@ let card = '';
 function countrySearch() {
   const country = searchBox.value.trim();
   if (country.length === 0) {
+    countryCard.innerHTML = '';
+    countryList.innerHTML = '';
     return;
   }
   fetchCountries(country)
