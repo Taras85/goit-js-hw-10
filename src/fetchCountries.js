@@ -1,8 +1,8 @@
 export function fetchCountries(name) {
-  // console.log(name.target.value.trim());
-  return fetch(
-    `https://restcountries.com/v2/name/${name}?fields=name,capital,population,flags,languages`
-  ).then(response => {
+  const BASE_URL = 'https://restcountries.com/v2/name/';
+  const BASE_SEARCH_PARAMS = 'fields=name,capital,population,flags,languages';
+
+  return fetch(`${BASE_URL}${name}?${BASE_SEARCH_PARAMS}`).then(response => {
     if (!response.ok) {
       throw Error(response.status);
       //   return;

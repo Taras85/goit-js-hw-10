@@ -1,7 +1,15 @@
 import './css/styles.css';
-
 import debounce from 'lodash.debounce';
 import { fetchCountries } from './fetchCountries';
+import Notiflix from 'notiflix';
+Notiflix.Notify.init({
+  width: '30%',
+  position: 'center-center',
+  fontSize: '16px',
+  timeout: 2000,
+  backOverlay: true,
+  messageMaxLength: 150,
+});
 
 const DEBOUNCE_DELAY = 300;
 
@@ -19,43 +27,52 @@ function countrySearch() {
   if (country.length === 0) {
     return;
   }
-  fetchCountries(country).then(countryes => {
-    countryList.innerHTML = '';
-    countryCard.innerHTML = '';
-    if ((countryes.length > 1) & (countryes.length < 10)) {
-      elementList(countryes);
-    } else if (countryes.length === 1) {
-      elementCard(countryes);
-    } else if (countryes.length > 10) {
-      alert('Too many matches found. Please enter a more specific name.');
-    }
-  });
+  fetchCountries(country)
+    .then(countryes => {
+      countryList.innerHTML = '';
+      countryCard.innerHTML = '';
+      if ((countryes.length > 1) & (countryes.length <= 10)) {
+        elementList(countryes);
+      } else if (countryes.length === 1) {
+        elementCard(countryes);
+      } else if (countryes.length > 10) {
+        Notiflix.Notify.info(
+          'Too many matches found. Please enter a more specific name. Знайдено забагато збігів. Будь ласка, введіть більш конкретну назву'
+        );
+      }
+    })
+    .catch(error => {
+      Notiflix.Notify.failure(
+        'Oops, there is no country with that name Ой, такої країни немає'
+      );
+    });
 }
 
 function elementList(countryes) {
   countryes.forEach(function (element) {
-    const list = `<li><img class="country-img" src="${element.flags.svg}" alt="flag" width=50px><h2 class="country-text">${element.name}</h2></li>`;
+    const list = `<li class="country-item"><div class="country-image"><img  src="${element.flags.svg}" alt="${element.name}" > </div> <p class="country-name">${element.name}</p></li>`;
     country.push(list);
   });
 
-  countryList.innerHTML = country;
+  countryList.innerHTML = country.join('');
   country = [];
 }
 function elementCard(countryes) {
   countryes.forEach(function (element) {
-    card = `<p>Official name: ${element.name}</p><p>Capital: ${
-      element.capital
-    }</p><p class="country-info">Рopulation: ${
-      element.population
-    }</p><img src="${
+    card = `<div class="country-title"> <div class="country-image"> <img src="${
       element.flags.svg
-    }"></img><p class="country-info">Languages: ${element.languages.map(
+    }" alt="${element.name}"></img></div> <p class="country-name__card" >${
+      element.name
+    }</p></div>
+    <p class="country-info"> Capital: <span class="country-info__title">${
+      element.capital
+    }</span></p> <p class="country-info">Рopulation: <span class="country-info__title">${
+      element.population
+    }</span></p> <p class="country-info">Languages: <span class="country-info__title">${element.languages.map(
       el => el.name
-    )}, ${element.languages.map(el => el.nativeName)}</p>`;
+    )}, ${element.languages.map(el => el.nativeName)}</span></p>`;
   });
 
   countryCard.innerHTML = card;
   card = '';
 }
-
-// console.log(countri);
