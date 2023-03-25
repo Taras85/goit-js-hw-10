@@ -44,6 +44,8 @@ function countrySearch() {
       }
     })
     .catch(error => {
+      countryCard.innerHTML = '';
+      countryList.innerHTML = '';
       Notiflix.Notify.failure(
         'Oops, there is no country with that name Ой, такої країни немає'
       );
